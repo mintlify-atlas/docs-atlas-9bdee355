@@ -68,6 +68,7 @@ $font-size-h4: 18px;
 $font-size-h5: 15px;
 $font-size-p: 15px;
 $nav-font-size: 13px;
+$blog-post-title: 11px;    // used for blog card titles in .blog section
 
 // Responsive sizes
 $responsive-h1: 40px;
@@ -91,19 +92,41 @@ To use a different typeface, replace the `@import` URL and update the correspond
 Button variants are defined in `sass/partials/_buttons.scss` and all use `$accent-color` for their active states:
 
 ```scss sass/partials/_buttons.scss
+// Base button — all buttons inherit this
+.btn {
+    font-size: 13px;
+    border: solid 2px;
+    border-radius: 40px;
+    display: inline-block;
+    text-transform: uppercase;
+}
+.btn:hover, .btn:focus {
+    color: $white-color;
+    border-color: $accent-color;
+    background-color: $accent-color;
+}
+
+// Filled button (gold background)
 .btn-fill {
     color: $white-color;
     border: solid 2px $accent-color;
     border-radius: 40px;
+    display: inline-block;
+    text-transform: uppercase;
     background-color: $accent-color;
 }
 .btn-fill:hover, .btn-fill:focus {
+    color: $white-color;
     background-color: $accent-color-hover;
     border-color: $accent-color-hover;
 }
+
+// White/outline button
 .btn-white {
+    font-size: 13px;
     border: solid 2px;
     border-radius: 40px;
+    display: inline-block;
     border-color: $txt-light;
 }
 .btn-white:hover, .btn-white:focus {
@@ -115,6 +138,11 @@ Button variants are defined in `sass/partials/_buttons.scss` and all use `$accen
 Button sizes are controlled by two modifier classes:
 - `.btn-small` — `padding: 8px 30px`
 - `.btn-large` — `padding: 15px 40px`
+- `.btn-margin-right` — `margin-right: 20px`
+
+<Note>
+  The class `.btn-accent` is used in `index.html` (on the RSVP button, dress code button, and Show Map button) but is not explicitly defined in `_buttons.scss`. It inherits from the base `.btn` class, which provides the rounded border and hover state using `$accent-color`.
+</Note>
 
 ## Responsive styles
 
@@ -163,8 +191,9 @@ gulp
 # Or compile SCSS only
 gulp sass
 
-# Watch for SCSS changes and recompile automatically
-gulp sass:watch
+    # Watch for SCSS changes and recompile automatically
+    # Note: sass:watch uses Gulp 3 task syntax and may not work with Gulp 4
+    gulp sass:watch
 ```
 
 The output is written to `css/styles.min.css`. The `index.html` file already references this compiled file, so no further changes are needed.
