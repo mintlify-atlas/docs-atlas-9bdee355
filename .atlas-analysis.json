@@ -1,0 +1,69 @@
+{
+  "projectType": "general",
+  "projectName": "Wedding Website",
+  "projectDescription": "A free, open-source wedding website template with RSVP via Google Sheets, Add to Calendar, Google Maps, Uber booking, and a YouTube video showcase — hostable on GitHub Pages with no backend required.",
+  "theme": "almond",
+  "primaryColor": "#f11212",
+  "lightColor": "#9b9292",
+  "darkColor": null,
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": ["introduction", "quickstart"]
+          },
+          {
+            "group": "Customization",
+            "pages": [
+              "customization/couple-details",
+              "customization/events",
+              "customization/photos-and-media",
+              "customization/rsvp-google-sheets",
+              "customization/google-maps",
+              "customization/uber-integration",
+              "customization/add-to-calendar",
+              "customization/styling"
+            ]
+          },
+          {
+            "group": "Deployment",
+            "pages": [
+              "deployment/github-pages",
+              "deployment/custom-domain"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "reference/project-structure",
+              "reference/faq"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "RSVP form that submits data directly to a Google Sheet via Google Apps Script",
+    "Email alerts to the couple when someone RSVPs",
+    "Add to Calendar support for Google, Apple, Outlook, and Yahoo calendars",
+    "One-tap Book Uber button pre-filled with the venue location",
+    "Embedded YouTube video background section",
+    "Interactive Google Maps embed showing the venue",
+    "Invite-code validation using MD5 hashing (client-side)",
+    "Responsive design with smooth scroll, animated waypoints, and a mobile hamburger menu",
+    "Free hosting on GitHub Pages — no backend server or database required",
+    "SCSS-based theming with Gulp build pipeline for CSS/JS compilation"
+  ],
+  "publicApiSurface": [
+    "RSVP form fields: email, name, extras (number of guests), invite_code",
+    "Google Apps Script endpoint: POST https://script.google.com/macros/s/<SCRIPT_ID>/exec",
+    "initMap() — Google Maps initializer called by the Maps JS API callback",
+    "initBBSRMap() — alternate map initializer for a different venue location",
+    "createCalendar(options) — ouical.js helper to generate Add to Calendar widget",
+    "Gulp tasks: sass, minify-js, default"
+  ]
+}
