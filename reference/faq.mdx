@@ -1,0 +1,165 @@
+---
+title: "FAQ"
+description: "Answers to common questions about the Wedding Website template"
+---
+
+<Note>
+  For bugs or feature requests, open an issue on [GitHub](https://github.com/rampatra/wedding-website/issues).
+</Note>
+
+<AccordionGroup>
+  <Accordion title="Is this really free to use?">
+    Yes. The project is licensed under [GPL-3.0](https://github.com/rampatra/wedding-website/blob/master/LICENSE), which means you can use, modify, and distribute it freely as long as you comply with the license terms.
+
+    Hosting on GitHub Pages is also free. GitHub Pages serves static files at no cost for public repositories, and the site has no backend server or database to run.
+  </Accordion>
+
+  <Accordion title="Do I need a server or database?">
+    No. The website is fully static. There are two external services involved:
+
+    - **GitHub Pages** — serves the HTML, CSS, and JavaScript files.
+    - **Google Sheets + Google Apps Script** — receives RSVP form submissions. When a guest submits the form, `scripts.js` POSTs the data to a Google Apps Script web app URL, which writes the row to a Google Sheet and can send you an email alert.
+
+    Both services are free and require no infrastructure to manage.
+  </Accordion>
+
+  <Accordion title="How do I change the invite code?">
+    The RSVP form validates the invite code by comparing its MD5 hash against stored hash values in `js/scripts.js`:
+
+    ```javascript
+    if (MD5($('#invite_code').val()) !== 'b0e53b10c1f55ede516b240036b88f40'
+        && MD5($('#invite_code').val()) !== '2ac7f43695eb0479d5846bb38eec59cc') {
+        // invalid code
+    }
+    ```
+
+    To set a new invite code:
+
+    1. Choose your code (e.g. `271117`).
+    2. Generate its MD5 hash. You can use any online MD5 generator or run this in your browser console:
+       ```javascript
+       MD5('271117') // returns the hash string
+       ```
+    3. Replace the hash string(s) in the `if` condition in `js/scripts.js`.
+    4. Run `gulp` to rebuild `js/scripts.min.js`.
+  </Accordion>
+
+  <Accordion title="Why is the RSVP form not submitting?">
+    Check the following:
+
+    **1. Google Apps Script URL**
+
+    The `$.post()` call in `js/scripts.js` must point to your deployed Google Apps Script web app URL:
+
+    ```javascript
+    $.post('https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec', data)
+    ```
+
+    The URL in the repository points to the original author's script. Deploy your own Google Apps Script and update this URL.
+
+    **2. Invite code**
+
+    The form validates the invite code before POSTing. If the code is wrong, the request never reaches Google. Make sure your guests have the correct code and that the MD5 hashes in `scripts.js` match.
+
+    **3. CORS**
+
+    Google Apps Script web app deployments set `Access-Control-Allow-Origin: *` when configured correctly. If you see CORS errors in the browser console, re-check your Google Apps Script deployment settings and make sure it is deployed as "Execute as: Me" with "Who has access: Anyone".
+  </Accordion>
+
+  <Accordion title="Can I add multiple invite codes?">
+    Yes. The invite code check uses `&&` (logical AND), so both conditions must be true for the code to be rejected — meaning the form accepts any code whose MD5 matches either hash.
+
+    To add more codes, extend the condition with additional `&&` clauses:
+
+    ```javascript
+    if (MD5($('#invite_code').val()) !== 'hash_for_code_one'
+        && MD5($('#invite_code').val()) !== 'hash_for_code_two'
+        && MD5($('#invite_code').val()) !== 'hash_for_code_three') {
+        // none of the codes matched
+    }
+    ```
+
+    Generate an MD5 hash for each code you want to support and add a corresponding `&&` line.
+  </Accordion>
+
+  <Accordion title="How do I add more events?">
+    The Events section (`#events`) uses a two-column Bootstrap grid. Each event is a `<div>` inside the left column (`leftcol`) or right column (`rightcol`) with a waypoint class for the entrance animation.
+
+    To add an event, copy an existing event block and place it in the appropriate column:
+
+    ```html
+    <div class="col-md-6 col-sm-12 col-xs-12 leftcol">
+        <div class="wp3">
+            <p><strong>27th November</strong></p>
+            <h5>Mehndi <span class="time">1PM - 5PM</span></h5>
+            <p>Event description goes here.</p>
+        </div>
+        <!-- Add your new event block here -->
+        <div class="wp5">
+            <h5>New Event <span class="time">8PM - 11PM</span></h5>
+            <p>Description of the new event.</p>
+        </div>
+    </div>
+    ```
+
+    Use waypoint classes `.wp1` through `.wp9` on your new blocks to apply entrance animations.
+  </Accordion>
+
+  <Accordion title="How do I change the venue on the Uber button?">
+    Find the Uber deep link in the map section of `index.html` and update the `dropoff` parameters:
+
+    ```html
+    <a class="btn btn-fill btn-small"
+       href="https://m.uber.com/ul/?action=setPickup
+             &client_id=Yh7Dl6SjB56RY2JuuZF8ttVa6ryFV78W
+             &pickup=my_location
+             &dropoff[formatted_address]=Fortune%20Park%20Panchwati
+             &dropoff[latitude]=22.593276
+             &dropoff[longitude]=88.270277">
+        Book Uber
+    </a>
+    ```
+
+    Change `dropoff[formatted_address]`, `dropoff[latitude]`, and `dropoff[longitude]` to match your venue. You can find latitude and longitude coordinates from Google Maps by right-clicking on the venue location.
+  </Accordion>
+
+  <Accordion title="How do I change the YouTube video?">
+    The background video is rendered by `jquery.mb.YTPlayer`. Find the player `<div>` in `index.html` and update the `videoURL` in the `data-property` attribute:
+
+    ```html
+    <div id="bgndVideo" class="player"
+         data-property="{videoURL:'https://youtu.be/9giqL1H6yRs',
+                         containment:'#video-bg',
+                         autoPlay:true,
+                         mute:true,
+                         showControls:false,
+                         startAt:80,
+                         stopAt:259,
+                         opacity:1}">
+    </div>
+    ```
+
+    Replace the `videoURL` value with your YouTube video URL. You can also adjust `startAt` and `stopAt` (in seconds) to control which portion of the video plays.
+  </Accordion>
+
+  <Accordion title="What browsers are supported?">
+    The site supports all modern browsers. For older browsers:
+
+    - **IE8**: Supported via `modernizr-2.8.3-respond-1.4.2.min.js` (bundled in `js/vendor/`). Respond.js adds CSS media query support to IE8. The HTML conditional comments at the top of `index.html` add IE-specific classes to the `<html>` element for targeted CSS fixes.
+    - **IE < 8**: A browser upgrade prompt is shown via the `.browserupgrade` paragraph.
+    - **IE8+**: Bootstrap 3, jQuery 1.11.2, and the vendor scripts provide broad compatibility.
+
+    Guests using outdated browsers will see a message recommending they upgrade.
+  </Accordion>
+
+  <Accordion title="How do I contribute?">
+    Contributions are welcome. To contribute:
+
+    1. Fork [rampatra/wedding-website](https://github.com/rampatra/wedding-website) on GitHub.
+    2. Create a feature branch and make your changes.
+    3. Run `gulp` to ensure the compiled output is up to date.
+    4. Open a [pull request](https://help.github.com/articles/about-pull-requests/) describing your changes.
+
+    To support the project financially, you can purchase one of the apps listed in the [Sponsors section of the README](https://github.com/rampatra/wedding-website#sponsors) or [buy the author a coffee](https://www.buymeacoffee.com/rampatra).
+  </Accordion>
+</AccordionGroup>

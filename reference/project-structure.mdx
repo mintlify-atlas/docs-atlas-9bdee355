@@ -1,0 +1,179 @@
+---
+title: "Project structure"
+description: "A guide to every file and folder in the Wedding Website repository"
+---
+
+The repository is a single-page static website. All source files are at the root level — there is no separate `src/` or `dist/` directory.
+
+## Directory tree
+
+```text
+wedding-website/
+├── index.html              # The entire website (single page)
+├── gulpfile.js             # Gulp build pipeline
+├── package.json            # npm dependencies and metadata
+├── manifest.json           # PWA web app manifest
+├── browserconfig.xml       # Windows tile configuration
+├── CNAME                   # Custom domain for GitHub Pages
+├── .nojekyll               # Prevents Jekyll processing on GitHub Pages
+├── .gitignore
+│
+├── sass/                   # SCSS source files
+│   ├── styles.scss         # Main entry point
+│   ├── ie.scss             # Internet Explorer overrides
+│   ├── print.scss          # Print stylesheet
+│   └── partials/
+│       ├── _colors.scss
+│       ├── _typography.scss
+│       ├── _buttons.scss
+│       └── _layout.scss
+│
+├── css/                    # Compiled and vendor CSS
+│   ├── styles.min.css      # Compiled from sass/styles.scss (gulp output)
+│   ├── queries.css         # Media query overrides
+│   ├── bootstrap.min.css
+│   ├── normalize.min.css
+│   ├── flexslider.css
+│   ├── jquery.fancybox.css
+│   ├── ie.css
+│   └── print.css
+│
+├── js/
+│   ├── scripts.js          # Main JavaScript (source)
+│   ├── scripts.min.js      # Minified build output (gulp output)
+│   ├── jquery.mb.YTPlayer.min.js
+│   ├── jquery.fancybox.pack.js
+│   ├── jquery.flexslider-min.js
+│   ├── jquery.counterup.min.js
+│   └── vendor/
+│       ├── jquery-1.11.2.min.js
+│       ├── bootstrap.min.js
+│       ├── modernizr-2.8.3-respond-1.4.2.min.js
+│       └── ouical.js
+│
+├── img/
+│   ├── hero.jpg            # Full-resolution hero background
+│   ├── hero-min.jpg        # Compressed hero (used in production)
+│   ├── logo.png            # Navbar logo
+│   ├── logo-lg.png         # Hero logo
+│   ├── IMG_2317.jpg        # Story section photo
+│   ├── DSD_0214.jpg        # Story section photo
+│   ├── iphone_instagram.jpg
+│   ├── polygonal-bg.jpg
+│   └── eng_pics/           # Engagement photo gallery
+│
+├── fonts/                  # Web fonts
+├── psd/                    # Photoshop source files
+└── .github/
+    └── workflows/
+        └── npm-gulp.yml    # CI workflow (commented out by default)
+```
+
+<Note>
+  `node_modules/` is excluded by `.gitignore` and is never committed. Run `npm install` after cloning to restore it locally.
+</Note>
+
+## Key files
+
+### `index.html`
+
+The entire website is a single HTML file. It contains all sections as `<section>` elements with anchor IDs: `#invitation`, `#intro`, `#events`, `#instagram`, `#eng-pics`, `#video-bg`, `#map`, and `#rsvp`.
+
+The navigation bar links to these anchors, and smooth scrolling is handled in `js/scripts.js`.
+
+### `sass/` — SCSS source files
+
+The Gulp `sass` task compiles `sass/styles.scss` into `css/styles.min.css`. The main file imports all partials.
+
+| File | Purpose |
+|------|---------|
+| `sass/styles.scss` | Main entry point — imports all partials and defines base styles |
+| `sass/ie.scss` | IE-specific overrides |
+| `sass/print.scss` | Print media styles |
+| `sass/partials/_colors.scss` | Color variables (backgrounds, accents, text) |
+| `sass/partials/_typography.scss` | Font families, sizes, and type scale variables |
+| `sass/partials/_buttons.scss` | Button component styles (`.btn-fill`, `.btn-accent`, `.btn-white`) |
+| `sass/partials/_layout.scss` | Layout rules for sections, hero, navigation, and spacing |
+
+### `css/` — compiled and vendor CSS
+
+`css/styles.min.css` is the Gulp build output and must be committed for GitHub Pages. All other files in `css/` are pre-built vendor stylesheets.
+
+### `js/scripts.js` — main JavaScript
+
+This is the primary source file. It initialises all interactive features when the DOM is ready. See the [function reference](#javascript-function-reference) below.
+
+### `js/scripts.min.js` — minified build output
+
+Produced by the Gulp `minify-js` task from `js/scripts.js`. This is what `index.html` loads in production. Must be committed.
+
+### `js/vendor/` — third-party libraries
+
+| File | Library |
+|------|---------|
+| `jquery-1.11.2.min.js` | jQuery 1.11.2 |
+| `bootstrap.min.js` | Bootstrap JS (modals, tooltips) |
+| `modernizr-2.8.3-respond-1.4.2.min.js` | Modernizr 2.8.3 + Respond.js 1.4.2 for IE8 support |
+| `ouical.js` | Calendar event generator (Google, iCal, Outlook, Yahoo) |
+
+### `manifest.json` — PWA web manifest
+
+Defines app name, icons, theme color (`#ffffff`), and display mode (`standalone`) for Progressive Web App installation on mobile devices.
+
+### `browserconfig.xml` — Windows tile config
+
+Configures the Windows Start Menu tile when users pin the site. References `mstile-150x150.png` and sets a tile color of `#da532c`.
+
+### `CNAME` — custom domain
+
+Contains the custom domain for GitHub Pages hosting. The file in this repository contains `wedding.rampatra.com`. Replace this with your own domain when deploying.
+
+### `.nojekyll` — GitHub Pages bypass
+
+An empty file that instructs GitHub Pages to skip Jekyll processing. Required to prevent GitHub from ignoring files with `_` prefixes (such as SCSS partials).
+
+## JavaScript function reference
+
+All functions are defined in `js/scripts.js`.
+
+| Function / handler | Description |
+|--------------------|-------------|
+| `initMap()` | Google Maps callback. Renders a map centered on `{lat: 22.5932759, lng: 88.27027720000001}` with a marker at the venue. Called by the Google Maps API script tag in `index.html`. |
+| `initBBSRMap()` | Alternative map initialiser for a second venue location (`{lat: 20.305826, lng: 85.85480189999998}`). Swap the `callback` parameter in the Maps API URL to use this. |
+| `alert_markup(alert_type, msg)` | Returns a Bootstrap alert HTML string. Used by the RSVP form to show info, success, and error messages in `#alert-wrapper`. |
+| RSVP form handler (`#rsvp-form` submit) | Validates the invite code using MD5, then POSTs form data to the Google Apps Script URL via `$.post()`. Shows a success modal or error alert based on the response. |
+| `createCalendar(options)` | Called via `ouical.js`. Generates "Add to Calendar" buttons for Google Calendar, Apple iCal, Outlook, and Yahoo Calendar. Output is injected into `#add-to-cal`. |
+| Waypoints (`.wp1`–`.wp9`) | Triggers `animate.css` entrance animations when elements scroll into view at 75% of the viewport. |
+
+### `createCalendar()` usage
+
+```javascript
+var myCalendar = createCalendar({
+    options: {
+        class: '',
+        id: ''
+    },
+    data: {
+        title: "Ram and Antara's Wedding",
+        start: new Date('Nov 27, 2017 10:00'),
+        end: new Date('Nov 29, 2017 00:00'),
+        address: 'ITC Fortune Park Hotel, Kolkata',
+        description: "We can't wait to see you on our big day."
+    }
+});
+
+$('#add-to-cal').html(myCalendar);
+```
+
+### RSVP invite code validation
+
+The form handler checks the MD5 hash of the submitted invite code against two stored hashes:
+
+```javascript
+if (MD5($('#invite_code').val()) !== 'b0e53b10c1f55ede516b240036b88f40'
+    && MD5($('#invite_code').val()) !== '2ac7f43695eb0479d5846bb38eec59cc') {
+    $('#alert-wrapper').html(alert_markup('danger', '<strong>Sorry!</strong> Your invite code is incorrect.'));
+}
+```
+
+To change the invite code, generate an MD5 hash of your chosen code and replace the hash strings. See the [FAQ](/reference/faq) for details.

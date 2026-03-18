@@ -1,0 +1,174 @@
+---
+title: "Styling and theming"
+description: "Customize colors, fonts, and visual design using SCSS variables"
+---
+
+All visual styles are written in SCSS and compiled to `css/styles.min.css` by Gulp. Color and typography are controlled through variables in two partials so you can restyle the entire site by changing a handful of values.
+
+## Color variables
+
+All color variables live in `sass/partials/_colors.scss`:
+
+```scss sass/partials/_colors.scss
+// Text colours
+$txt-primary: rgba(28, 54, 83, 0.6);   // body paragraph text
+$txt-secondary: #3D4351;               // heading font
+$txt-light: #fff;                      // header / hero text
+$txt-accent: #ACB1B4;                  // muted accent text
+$form-placeholder: #BCC1C3;            // form placeholder text
+
+// Global colours
+$accent-color: #e8ca6f;                // global accent colour (gold)
+$accent-color-hover: #d3b56a;          // global accent colour hover state
+$white-color: #fff;
+$black-color: #000;
+
+// Typography colours
+$h2-color: #3D4351;
+$h3-color: #3D4351;
+$h5-color: #3D4351;
+
+// Layout colours
+$section-light: #fff;                  // light section background
+$section-dark: #f8f9fd;               // dark section background
+$to-top-bg: #495061;                  // "back to top" button background
+$footer-primary: #3D4351;             // footer primary background
+$footer-secondary: #373D4A;           // footer secondary background
+
+// Keylines
+$keyline-color: #E6E9EA;              // subtle divider lines
+$footer-keyline-color: #4E566C;       // divider lines inside the footer
+```
+
+<Tip>
+  `$accent-color: #e8ca6f` is the gold/champagne tone used throughout the site — button borders, hover states, icon colors, link colors, and form icons all reference this single variable. Changing it to your own wedding color will update the entire site's accent consistently.
+</Tip>
+
+## Font variables
+
+Typography variables live in `sass/partials/_typography.scss`:
+
+```scss sass/partials/_typography.scss
+// Font families
+$sans-serif: 'Open Sans', sans-serif;
+$serif: Merriweather, Georgia, 'Times New Roman', serif;
+$accent-font: 'Nunito', sans-serif;
+
+// Font weights
+$light: 300;
+$normal: 400;
+$semibold: 500;
+$bold: 700;
+
+// Font sizes
+$font-size-h1: 60px;
+$font-size-h2: 40px;
+$font-size-h3: 24px;
+$font-size-h4: 18px;
+$font-size-h5: 15px;
+$font-size-p: 15px;
+$nav-font-size: 13px;
+
+// Responsive sizes
+$responsive-h1: 40px;
+
+// Line height
+$base-line-height: 29px;
+```
+
+The three Google Fonts families (`Open Sans`, `Merriweather`, `Nunito`) are imported at the top of `sass/styles.scss`:
+
+```scss sass/styles.scss
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800);
+@import url(https://fonts.googleapis.com/css?family=Merriweather:400,300,400italic,300italic,700,700italic);
+@import url(https://fonts.googleapis.com/css?family=Nunito:400,300,700);
+```
+
+To use a different typeface, replace the `@import` URL and update the corresponding font variable.
+
+## Button styles
+
+Button variants are defined in `sass/partials/_buttons.scss` and all use `$accent-color` for their active states:
+
+```scss sass/partials/_buttons.scss
+.btn-fill {
+    color: $white-color;
+    border: solid 2px $accent-color;
+    border-radius: 40px;
+    background-color: $accent-color;
+}
+.btn-fill:hover, .btn-fill:focus {
+    background-color: $accent-color-hover;
+    border-color: $accent-color-hover;
+}
+.btn-white {
+    border: solid 2px;
+    border-radius: 40px;
+    border-color: $txt-light;
+}
+.btn-white:hover, .btn-white:focus {
+    color: $accent-color;
+    border-color: $accent-color;
+}
+```
+
+Button sizes are controlled by two modifier classes:
+- `.btn-small` — `padding: 8px 30px`
+- `.btn-large` — `padding: 15px 40px`
+
+## Responsive styles
+
+Responsive breakpoint overrides are in `css/queries.css`, loaded as a separate stylesheet after `styles.min.css`:
+
+```html index.html
+<link rel="stylesheet" href="css/styles.min.css">
+<link rel="stylesheet" href="css/queries.css">
+```
+
+Edit `css/queries.css` directly (it is plain CSS, not SCSS) to override styles at specific screen widths.
+
+## Gulp build pipeline
+
+The Gulp build compiles SCSS to compressed CSS and minifies the JavaScript:
+
+```javascript gulpfile.js
+// compile scss to css
+gulp.task('sass', function () {
+    return gulp.src('./sass/styles.scss')
+        .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
+        .pipe(rename({basename: 'styles.min'}))
+        .pipe(gulp.dest('./css'));
+});
+
+// minify js
+gulp.task('minify-js', function () {
+    return gulp.src('./js/scripts.js')
+        .pipe(uglify())
+        .pipe(rename({basename: 'scripts.min'}))
+        .pipe(gulp.dest('./js'));
+});
+
+// default task — runs sass then minify-js
+gulp.task('default', gulp.series('sass', 'minify-js'));
+```
+
+### Workflow
+
+After editing any `.scss` file:
+
+```bash
+# Compile SCSS and minify JS in one step
+gulp
+
+# Or compile SCSS only
+gulp sass
+
+# Watch for SCSS changes and recompile automatically
+gulp sass:watch
+```
+
+The output is written to `css/styles.min.css`. The `index.html` file already references this compiled file, so no further changes are needed.
+
+<Note>
+  The browser loads `css/styles.min.css`, not the raw SCSS files. **You must re-run `gulp` (or `gulp sass`) after every SCSS change** for the changes to appear in the browser. If you skip this step, your edits will have no visible effect.
+</Note>

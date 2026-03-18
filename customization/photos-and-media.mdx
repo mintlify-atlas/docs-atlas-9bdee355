@@ -1,0 +1,161 @@
+---
+title: "Photos and media"
+description: "Add your engagement photos, Instagram section, and YouTube video"
+---
+
+The website includes three visual media sections: an engagement photo gallery powered by Fancybox, an Instagram hashtag call-to-action, and a full-width YouTube background video.
+
+## Engagement photo gallery
+
+Engagement photos are displayed in a six-column grid. Each photo uses `class="fancybox"` so clicking it opens a lightbox with the full-size version.
+
+```html index.html
+<section id="eng-pics" class="section-padding">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+                <a class="fancybox" rel="group" href="img/eng_pics/_RFX2942-lg.jpg">
+                    <div class="img-wrap">
+                        <div class="overlay">
+                            <i class="fa fa-search"></i>
+                        </div>
+                        <img src="img/eng_pics/_RFX2942-sm.jpg" alt=""/>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-2">
+                <a class="fancybox" rel="group" href="img/eng_pics/IMG_3483-lg.jpg">
+                    <div class="img-wrap">
+                        <div class="overlay">
+                            <i class="fa fa-search"></i>
+                        </div>
+                        <img src="img/eng_pics/IMG_3483-sm.jpg" alt=""/>
+                    </div>
+                </a>
+            </div>
+            <!-- four more identical col-md-2 blocks… -->
+        </div>
+    </div>
+</section>
+```
+
+### How to add or remove photos
+
+Each photo needs **two image files** placed in `img/eng_pics/`:
+
+- A **small thumbnail** (suffix `-sm.jpg`) displayed in the grid
+- A **large version** (suffix `-lg.jpg`) opened by the lightbox
+
+To **add** a photo, copy an existing `<div class="col-md-2">` block and update both the `href` (large image path) and the `<img src>` (thumbnail path).
+
+To **remove** a photo, delete the corresponding `<div class="col-md-2">` block.
+
+The `rel="group"` attribute on every `<a>` tag tells Fancybox to group all photos into a single navigable lightbox. Fancybox is initialized in `js/scripts.js`:
+
+```javascript js/scripts.js
+$('.fancybox').fancybox({
+    padding: 4,
+    width: 1000,
+    height: 800
+});
+```
+
+## Instagram section
+
+The `#instagram` section encourages guests to tag their photos with the wedding hashtag:
+
+```html index.html
+<section id="instagram" class="section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h3>A picture is worth a thousand words!</h3>
+                <p>Help us capture the moment, tag your photos with the hashtag
+                    <a href="https://instagram.com/explore/tags/ramandantara/" target="_blank">#RamAndAntara</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+```
+
+Change `ramandantara` in the `href` and `#RamAndAntara` in the link text to your own hashtag. The decorative iPhone image (`img/iphone_instagram.jpg`) below the text can also be swapped for any image you like.
+
+## YouTube background video
+
+The `#video-bg` section embeds a YouTube video as a muted, auto-playing background using the `jquery.mb.YTPlayer` plugin:
+
+```html index.html
+<section id="video-bg" class="hidden-sm hidden-xs">
+    <div id="bgndVideo" class="player"
+         data-property="{videoURL:'https://youtu.be/9giqL1H6yRs',containment:'#video-bg',autoPlay:true, mute:true, showControls:false, startAt:80, stopAt:259, opacity:1}">
+    </div>
+    <div id="video-content">
+        <h5>Kolkata</h5>
+        <p>City of joy</p>
+    </div>
+</section>
+```
+
+All configuration is in the `data-property` attribute on `#bgndVideo`:
+
+| Property | Current value | Description |
+|---|---|---|
+| `videoURL` | `https://youtu.be/9giqL1H6yRs` | Full YouTube video URL |
+| `containment` | `#video-bg` | CSS selector for the container element |
+| `autoPlay` | `true` | Start playing automatically |
+| `mute` | `true` | Mute audio (required for autoplay in most browsers) |
+| `showControls` | `false` | Hide the YouTube player controls |
+| `startAt` | `80` | Start playback at 80 seconds |
+| `stopAt` | `259` | Stop playback at 259 seconds |
+| `opacity` | `1` | Video opacity (0–1) |
+
+Update `videoURL` to your own YouTube link, and adjust `startAt` / `stopAt` to select the best portion of the video.
+
+Also update the overlay text inside `#video-content` to describe your own city or a personal caption:
+
+```html
+<div id="video-content">
+    <h5>Kolkata</h5>
+    <p>City of joy</p>
+</div>
+```
+
+The player is initialized in `scripts.js` with a single call:
+
+```javascript js/scripts.js
+$('.player').YTPlayer();
+```
+
+<Warning>
+  The YouTube video section has `class="hidden-sm hidden-xs"` applied to the `<section>` element. This means **the video is not shown on tablets or mobile phones** — it only appears on medium and large screens. This is intentional to avoid performance issues on mobile, but be aware that mobile guests will not see it.
+</Warning>
+
+## CDN fallback functions
+
+The page includes two inline JavaScript helper functions in the `<head>` that load CSS and JS from a CDN if local `node_modules` files fail to load:
+
+```javascript index.html (inline <head> script)
+// load css files from CDN if local node_modules fail
+function loadCssFromCDN(css) {
+    const link = document.createElement('link');
+    if (css === 'animate.css') {
+        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css';
+    } else if (css === 'font-awesome.css') {
+        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css';
+    }
+    link.rel = 'stylesheet';
+    document.getElementsByTagName('head')[0].appendChild(link);
+}
+
+// load js files from CDN if local node_modules fail
+function loadJsFromCDN(js) {
+    if (js === 'waypoints.js') {
+        document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.js"><\/script>');
+    } else if (js === 'jquery.js') {
+        document.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"><\/script>');
+    }
+}
+```
+
+These are referenced via `onerror` attributes on the `<link>` and `<script>` tags. No changes are needed here unless you want to pin different CDN versions.

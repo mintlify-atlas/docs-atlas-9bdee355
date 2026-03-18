@@ -1,0 +1,144 @@
+---
+title: "Google Maps"
+description: "Show your venue location on an interactive Google Map"
+---
+
+The venue section embeds an interactive Google Map centered on the wedding venue. The map is overlaid with a slide-in info card showing the venue name, address, and contact details.
+
+## Getting a Google Maps API key
+
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project (or select an existing one)
+3. Enable the **Maps JavaScript API** under APIs & Services
+4. Create an API key under **APIs & Services → Credentials**
+5. Restrict the key to your website's domain for production use
+
+## Adding the API key to index.html
+
+The Maps JavaScript API is loaded at the bottom of `index.html`. Replace the existing key with your own:
+
+```html index.html
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBlPw3GQYI3faa_9mRE6plWuM7xNEmrwH0&callback=initMap">
+</script>
+```
+
+Replace `AIzaSyBlPw3GQYI3faa_9mRE6plWuM7xNEmrwH0` with your own API key. The `callback=initMap` parameter tells the Maps SDK to call `initMap()` once it has loaded.
+
+## initMap() function
+
+The `initMap()` function in `js/scripts.js` creates the map and places a marker at the venue coordinates:
+
+```javascript js/scripts.js
+function initMap() {
+    var location = {lat: 22.5932759, lng: 88.27027720000001};
+    var map = new google.maps.Map(document.getElementById('map-canvas'), {
+        zoom: 15,
+        center: location,
+        scrollwheel: false
+    });
+
+    var marker = new google.maps.Marker({
+        position: location,
+        map: map
+    });
+}
+```
+
+Update the `lat` and `lng` values to your venue's coordinates. The `zoom` level of `15` is suitable for a city block — increase it (e.g. `17`) to zoom in closer, or decrease it to show a wider area. `scrollwheel: false` prevents the map from accidentally capturing scroll events on the page.
+
+## Alternate venue example: initBBSRMap()
+
+The file also contains a second map function for an alternate venue in Bhubaneswar:
+
+```javascript js/scripts.js
+function initBBSRMap() {
+    var la_fiesta = {lat: 20.305826, lng: 85.85480189999998};
+    var map = new google.maps.Map(document.getElementById('map-canvas'), {
+        zoom: 15,
+        center: la_fiesta,
+        scrollwheel: false
+    });
+
+    var marker = new google.maps.Marker({
+        position: la_fiesta,
+        map: map
+    });
+}
+```
+
+This function is not currently called — only `initMap()` is used as the Maps API callback. If your wedding has multiple venues on different pages, you can switch the `callback` parameter in the script tag to point to a different function, or call a different function manually after the API loads.
+
+## Updating the coordinates
+
+<Tip>
+  To find the exact latitude and longitude of your venue:
+  1. Open [Google Maps](https://maps.google.com) and search for the venue
+  2. Right-click on the pin and select **What's here?**
+  3. The coordinates appear at the bottom of the screen in `lat, lng` format
+  4. Copy them into the `lat` and `lng` fields in `initMap()`
+</Tip>
+
+## Map HTML structure
+
+The map section in `index.html` consists of a full-width canvas div and an overlaid content wrapper:
+
+```html index.html
+<section id="map" class="section-padding">
+    <div class="text-center">
+        <h3>How do I get there?</h3>
+        <p>It's way easier than you think!</p>
+    </div>
+    <div id="map-canvas"></div>
+    <div id="map-content-wrapper" class="container pointer-events-none">
+        <div class="row">
+            <div class="col-xs-offset-1 col-xs-10 col-md-offset-3 col-md-6">
+                <div class="text-center">
+                    <div id="btn-show-content" class="toggle-map-content pointer-events-auto">
+                        <i class="fa fa-info-circle"></i>&nbsp;&nbsp; Show info
+                    </div>
+                </div>
+                <div id="map-content" class="pointer-events-auto">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>ITC Fortune Park</h5>
+                            <p>Kona Expressway, Howrah, West Bengal 711403, India</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Mr. Amit Roy</h5>
+                            <p>
+                                <i class="fa fa-mobile"></i>
+                                <a href="tel://+919412345678">+91 9412345678</a><br>
+                                <i class="fa fa-mobile"></i>
+                                <a href="tel://+917123456789">+91 7123456789</a>
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Book Uber and Show map buttons are also inside #map-content -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+```
+
+Update the venue name, address, contact name, and phone numbers inside `#map-content`. The `pointer-events-none` / `pointer-events-auto` classes allow click events to pass through the transparent overlay to the map, while still making the info card and buttons interactive.
+
+The "Show info" / "Show map" toggle is handled in `js/scripts.js`:
+
+```javascript js/scripts.js
+$('#btn-show-map').click(function () {
+    $('#map-content').toggleClass('toggle-map-content');
+    $('#btn-show-content').toggleClass('toggle-map-content');
+});
+$('#btn-show-content').click(function () {
+    $('#map-content').toggleClass('toggle-map-content');
+    $('#btn-show-content').toggleClass('toggle-map-content');
+});
+```
+
+The `toggle-map-content` CSS class sets `opacity: 0; visibility: hidden` to animate the card in and out.
+
+<Note>
+  The **Book Uber** button lives inside `#map-content`, right next to the venue address. See the [Uber integration](/customization/uber-integration) page for instructions on updating the deep-link URL.
+</Note>

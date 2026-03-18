@@ -1,0 +1,132 @@
+---
+title: "Events"
+description: "Configure your wedding events, dates, times, and dress codes"
+---
+
+The events section lists all the pre-wedding and wedding ceremonies with their times and descriptions. It also includes a dress-code modal with Pinterest inspiration links.
+
+## Events section HTML
+
+The `#events` section is split into two columns — left for Day 1 events, right for Day 2 events. Each event uses a `wp` (waypoint) class that triggers a slide-in animation on scroll.
+
+```html index.html
+<section class="events section-padding" id="events">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="header">Events</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-sm-12 col-xs-12 leftcol">
+                <div class="wp3">
+                    <p><strong>27th November</strong></p>
+                    <h5>Mehndi <span class="time">1PM - 5PM</span></h5>
+                    <p>It's one of the oldest traditional Indian pre wedding ceremony...</p>
+                </div>
+                <div class="wp5">
+                    <h5>Cocktail Night <span class="time">7PM - 12AM</span></h5>
+                    <p>This event is no way close to ethnic...</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-12 col-xs-12 rightcol">
+                <div class="wp4">
+                    <p><strong>28th November</strong></p>
+                    <h5>Haldi <span class="time">10AM-11AM</span></h5>
+                    <p>The haldi ceremony is usually held separately...</p>
+                </div>
+                <div class="wp6">
+                    <h5>Wedding <span class="time">6PM-12AM</span></h5>
+                    <p>This is the main event in the entire wedding...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+```
+
+## Changing event names, dates, and descriptions
+
+For each event, update three things:
+
+1. **Date heading** — the `<p><strong>` tag above each column (e.g. `27th November`)
+2. **Event name and time** — the `<h5>` tag: `Mehndi <span class="time">1PM - 5PM</span>`
+3. **Description** — the `<p>` paragraph that follows
+
+To add a new event, copy an existing `<div class="wp3">` block and increment the waypoint class number (e.g. `wp3` → use an unused class, or reuse an existing one). If you add more than the existing waypoint selectors cover, add a corresponding waypoint handler in `js/scripts.js`:
+
+```javascript js/scripts.js
+$('.wp3').waypoint(function () {
+    $('.wp3').addClass('animated fadeInLeft');
+}, {
+    offset: '75%'
+});
+```
+
+<Note>
+  If you change the event dates here, remember to also update the matching dates in the **Add to Calendar** configuration in `js/scripts.js`. Both places must stay in sync so calendar invites reflect the correct schedule. See the [Add to Calendar](/customization/add-to-calendar) page for details.
+</Note>
+
+## Dress code modal
+
+Clicking the "Dress code" button opens a Bootstrap modal (`#dc-modal`). The modal body lists dress codes per event and links to Pinterest boards for inspiration:
+
+```html index.html
+<div id="dc-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
+                <h3 class="text-center section-padding">Ugh... dress codes?</h3>
+
+                <h5>Mehndi <span class="time">1PM - 5PM</span></h5>
+                <p>
+                    <strong>Ethnic indian wear</strong><br>
+                    Ladies can wear something
+                    <a href="https://www.pinterest.com/ramswarooppatra/mehndi-dress-for-women/">bright &amp; vivid</a>
+                    and gentlemen can be on their
+                    <a href="https://www.pinterest.com/ramswarooppatra/mehndi-dress-for-men/">vibrant kurtas</a>
+                    with pants or pyjamas along with an optional shawl.
+                </p>
+
+                <h5>Cocktail Night <span class="time">7PM - 12AM</span></h5>
+                <p>
+                    <strong>Western attire</strong><br>
+                    A semi-formal look that is contemporary &amp; fashionable...
+                    <a href="https://www.pinterest.com/ramswarooppatra/cocktail-night-outfit-for-women/">ladies</a>
+                    &amp; <a href="https://www.pinterest.com/ramswarooppatra/cocktail-night-outfit-for-men/">gents</a>.
+                </p>
+
+                <h5>Wedding <span class="time">6PM-12AM</span></h5>
+                <p>
+                    <strong>Indo-western</strong><br>
+                    Ladies can flaunt their unconventional sarees,
+                    <a href="https://www.pinterest.com/ramswarooppatra/indo-western-lehengas/">lehengas</a>,
+                    <a href="https://www.pinterest.com/ramswarooppatra/indo-western-anarkalis/">anarkalis</a>...
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+```
+
+## Updating Pinterest links
+
+Each dress code suggestion links to a Pinterest board. Replace the `href` values with your own Pinterest board URLs, or remove the `<a>` tags entirely and leave plain text:
+
+| Event | Current link | Replace with |
+|---|---|---|
+| Mehndi (women) | `pinterest.com/…/mehndi-dress-for-women/` | Your own Pinterest board URL |
+| Mehndi (men) | `pinterest.com/…/mehndi-dress-for-men/` | Your own Pinterest board URL |
+| Cocktail (women) | `pinterest.com/…/cocktail-night-outfit-for-women/` | Your own Pinterest board URL |
+| Cocktail (men) | `pinterest.com/…/cocktail-night-outfit-for-men/` | Your own Pinterest board URL |
+| Wedding lehengas | `pinterest.com/…/indo-western-lehengas/` | Your own Pinterest board URL |
+| Wedding anarkalis | `pinterest.com/…/indo-western-anarkalis/` | Your own Pinterest board URL |
+
+The button that opens the modal is wired via Bootstrap's `data-toggle` and `data-target` attributes — no JavaScript changes are needed:
+
+```html index.html
+<a class="btn btn-accent btn-small" data-toggle="modal" data-target="#dc-modal">
+    <i class="fa fa-barcode"></i>&nbsp;&nbsp;Dress code
+</a>
+```

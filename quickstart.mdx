@@ -1,80 +1,112 @@
 ---
 title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+description: "Get your wedding website up and running in under 5 minutes"
 ---
 
-## Get started in three steps
+<Info>
+  A live demo is available at [wedding.rampatra.com](http://wedding.rampatra.com/). Use invite code `271117` to try the RSVP form.
+</Info>
 
-Get your documentation site running locally and make your first customization.
+## Prerequisites
 
-### Step 1: Set up your local environment
+Before you begin, make sure you have the following installed:
 
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
-    
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
-    
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
+- [Git](https://git-scm.com/) — to clone the repository
+- [Node.js](https://nodejs.org/) (v14 or later) — includes npm
+- [Gulp CLI](https://gulpjs.com/docs/en/getting-started/quick-start) — to run the build pipeline
 
-### Step 2: Deploy your changes
+Install the Gulp CLI globally if you haven't already:
 
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
-    
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
+```bash
+npm install --global gulp-cli
+```
 
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
+## Setup
 
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
+<Steps>
+  <Step title="Clone the repository">
+    Clone the Wedding Website project to your local machine:
 
-### Step 3: Go live
+    ```bash
+    git clone https://github.com/rampatra/wedding-website.git
+    ```
+  </Step>
 
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
+  <Step title="Navigate to the project directory">
+    ```bash
+    cd wedding-website
+    ```
+  </Step>
 
-## Next steps
+  <Step title="Install dependencies">
+    Install all npm dependencies (Gulp, Sass, animate.css, Font Awesome, Waypoints):
 
-Now that you have your docs running, explore these key features:
+    ```bash
+    npm install
+    ```
+
+    This installs both `devDependencies` (gulp, gulp-sass, gulp-uglify, gulp-rename, sass) and `dependencies` (animate.css, font-awesome, waypoints).
+  </Step>
+
+  <Step title="Build the project">
+    Run the default Gulp task to compile SCSS to CSS and minify JavaScript:
+
+    ```bash
+    gulp
+    ```
+
+    The `default` task runs two subtasks in sequence:
+
+    | Task | What it does | Output |
+    |---|---|---|
+    | `sass` | Compiles `sass/styles.scss` → compressed CSS | `css/styles.min.css` |
+    | `minify-js` | Minifies `js/scripts.js` | `js/scripts.min.js` |
+
+    You can also run individual tasks:
+
+    <CodeGroup>
+      ```bash Compile SCSS only
+      gulp sass
+      ```
+
+      ```bash Minify JS only
+      gulp minify-js
+      ```
+
+      ```bash Watch SCSS for changes
+      gulp sass:watch
+      ```
+    </CodeGroup>
+  </Step>
+
+  <Step title="Open the website">
+    Double-click `index.html` to open it in your browser, or use a local server:
+
+    ```bash
+    npx serve .
+    ```
+
+    <Tip>
+      You should see the full wedding website with a hero section, navigation, "How we met" story, events, engagement photos, map, and RSVP form. All animations and sections should load correctly.
+    </Tip>
+  </Step>
+</Steps>
+
+## What's next
+
+Now that the website is running locally, personalize it for your wedding:
 
 <CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
+  <Card title="Couple details" icon="heart" href="/customization/couple-details">
+    Update the couple's names, your love story, and invitation text.
+  </Card>
+  <Card title="RSVP setup" icon="envelope" href="/customization/rsvp-google-sheets">
+    Connect the RSVP form to your own Google Sheet.
+  </Card>
+  <Card title="Events" icon="calendar" href="/customization/events">
+    Add your wedding ceremony and reception details.
+  </Card>
+  <Card title="Deploy free" icon="cloud" href="/deployment/github-pages">
+    Push your personalized site live on GitHub Pages.
+  </Card>
 </CardGroup>
-
-<Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
-</Note>

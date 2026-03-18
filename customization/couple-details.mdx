@@ -1,0 +1,125 @@
+---
+title: "Couple details"
+description: "Personalize the couple's names, story, and invitation text"
+---
+
+This page covers every piece of text and imagery in `index.html` that you should update to reflect your own names, story, and branding.
+
+## Page title and meta tags
+
+The browser tab title, search description, and social-media preview are all set in the `<head>` of `index.html`.
+
+```html index.html
+<title>Ram & Antara getting hitched!</title>
+<meta name="description" content="We would like to invite you to our big day.">
+
+<meta property="og:title" content="Ram & Antara getting hitched">
+<meta property="og:description" content="We would like to invite you to our big day.">
+<meta property="og:image" content="https://wedding.ramswaroop.me/img/hero-min.jpg">
+```
+
+Replace every instance of the couple's names and update `og:image` to a URL pointing to your own hero photo.
+
+## Hero logo images
+
+The hero section uses two logo files instead of a plain text heading:
+
+```html index.html
+<!-- Navigation bar logo (small) -->
+<div class="logo"><a href="#"><img src="img/logo.png" alt="Logo"></a></div>
+
+<!-- Hero section logo (large) -->
+<div class="hero-content text-center">
+    <img src="img/logo-lg.png">
+</div>
+```
+
+Replace `img/logo.png` (used in the sticky navigation bar) and `img/logo-lg.png` (displayed prominently over the hero background photo) with your own files. Keep the same filenames or update the `src` attributes accordingly.
+
+The commented-out `<h1>` and `<p class="intro">` tags below the image are an alternative plain-text approach — remove the `<!--` / `-->` wrappers and delete the `<img>` tag if you prefer text over a logo graphic.
+
+```html index.html
+<!--<h1>Ram and Antara</h1>-->
+<img src="img/logo-lg.png">
+<!--<p class="intro">Ram & Antara are getting hitched!</p>-->
+```
+
+## Invitation section
+
+Immediately below the hero, the invitation section introduces the wedding dates:
+
+```html index.html
+<section id="invitation" class="section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h3>We are getting hitched</h3>
+                <p>The dates are 27<sup>th</sup> & 28<sup>th</sup> of November '17 and we would like you to be a part of
+                    it.</p>
+            </div>
+        </div>
+    </div>
+</section>
+```
+
+Update the `<h3>` text and the `<p>` paragraph with your own dates.
+
+## "How we met" story
+
+The `#intro` section holds the couple's origin story and two flanking photos:
+
+```html index.html
+<section id="intro">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h3 class="header">How we met</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 hidden-sm hidden-xs"><img src="img/IMG_2317.jpg" class="wp1"></div>
+            <div class="col-md-6">
+                <p>
+                    I first saw Antara in the Fall of 2008 when we started our undergrad...
+                </p>
+            </div>
+            <div class="col-md-3 hidden-sm hidden-xs"><img src="img/DSD_0214.jpg" class="wp2"></div>
+        </div>
+    </div>
+</section>
+```
+
+Edit the `<p>` block inside `.col-md-6` with your own story. Replace `img/IMG_2317.jpg` and `img/DSD_0214.jpg` with your own couple photos — these animate in from the left and right as the user scrolls.
+
+## Instagram hashtag section
+
+<Tip>
+  The Instagram section at `#instagram` contains your wedding hashtag. Update both the display text and the link `href` to match your own hashtag so guests know what to tag their photos with.
+
+  ```html index.html
+  <p>Help us capture the moment, tag your photos with the hashtag
+      <a href="https://instagram.com/explore/tags/ramandantara/" target="_blank">#RamAndAntara</a>
+  </p>
+  ```
+
+  Change `ramandantara` in the URL and `#RamAndAntara` in the link text to your chosen hashtag.
+</Tip>
+
+## Footer credit
+
+The footer contains a personal credit line. Update it with your own names:
+
+```html index.html
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 text-center content">
+                <span class="to-top-wrapper"><a href="#top" class="to-top"><i class="fa fa-angle-up"></i></a></span>
+                <p>Crafted by Ram with lots of <span class="fa fa-heart pulse2"></span> for Antara</p>
+            </div>
+        </div>
+    </div>
+</footer>
+```
+
+The `fa-heart pulse2` span renders an animated pulsing heart icon via Font Awesome and a CSS animation defined in `sass/styles.scss`.

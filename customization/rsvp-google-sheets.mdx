@@ -1,0 +1,203 @@
+---
+title: "RSVP with Google Sheets"
+description: "Connect your RSVP form to Google Sheets and receive email notifications"
+---
+
+The RSVP form submits guest data directly to a Google Sheet via a Google Apps Script web app. An invite code (validated client-side using MD5) prevents uninvited submissions.
+
+## RSVP form HTML
+
+```html index.html
+<section class="rsvp text-center" id="rsvp">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <h3>What are you waiting for?</h3>
+                <p>We would greatly appreciate if you could RSVP before 1st of November '17</p>
+                <form id="rsvp-form" class="rsvp-form" action="" method="POST">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6">
+                            <div class="form-input-group">
+                                <i class="fa fa-envelope"></i>
+                                <input type="email" name="email" placeholder="Your email" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <div class="form-input-group">
+                                <i class="fa fa-user"></i>
+                                <input name="name" placeholder="Your name" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6">
+                            <div class="form-input-group">
+                                <i class="fa fa-users"></i>
+                                <input type="number" name="extras" min="0" max="4"
+                                       placeholder="Husband/Wife or kids" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <div class="form-input-group">
+                                <i class="fa fa-key"></i>
+                                <input type="number" name="invite_code" id="invite_code" min="0"
+                                       placeholder="Invite code" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" id="alert-wrapper"></div>
+                    </div>
+                    <button class="btn-fill rsvp-btn">Yes, that's me!</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+```
+
+The form collects four fields: `email`, `name`, `extras` (number of additional guests), and `invite_code`.
+
+## Setup steps
+
+<Steps>
+  <Step title="Create a Google Sheet">
+    Create a new Google Sheet at [sheets.google.com](https://sheets.google.com). Add the following column headers in row 1, exactly as written (case-sensitive):
+
+    | A | B | C | D | E |
+    |---|---|---|---|---|
+    | `email` | `name` | `extras` | `invite_code` | `timestamp` |
+
+    Each RSVP submission will append a new row with these five values.
+  </Step>
+
+  <Step title="Open Google Apps Script">
+    In your Google Sheet, go to **Extensions → Apps Script**. This opens the script editor bound to your sheet.
+  </Step>
+
+  <Step title="Paste and deploy the script">
+    The script must handle HTTP POST requests from the website. The form data is serialized by jQuery and sent as a POST body, matching the field names above. A minimal handler looks like this:
+
+    ```javascript Google Apps Script
+    function doPost(e) {
+      var sheet = SpreadsheetApp.getActiveSheet();
+      var data = e.parameter;
+      sheet.appendRow([
+        data.email,
+        data.name,
+        data.extras,
+        data.invite_code,
+        new Date()
+      ]);
+      return ContentService
+        .createTextOutput(JSON.stringify({ result: 'success' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    ```
+
+    After pasting the script, click **Deploy → New deployment**, choose **Web app**, set "Execute as" to **Me**, and "Who has access" to **Anyone**. Copy the deployment URL.
+  </Step>
+
+  <Step title="Paste the script URL into scripts.js">
+    Find the `$.post()` call in `js/scripts.js` and replace the existing URL with your deployment URL:
+
+    ```javascript js/scripts.js
+    $.post('https://script.google.com/macros/s/AKfycbyo0rEknln8LedEP3bkONsfOh776IR5lFidLhJFQ6jdvRiH4dKvHZmtoIybvnxpxYr2cA/exec', data)
+        .done(function (data) {
+            console.log(data);
+            if (data.result === "error") {
+                $('#alert-wrapper').html(alert_markup('danger', data.message));
+            } else {
+                $('#alert-wrapper').html('');
+                $('#rsvp-modal').modal('show');
+            }
+        })
+        .fail(function (data) {
+            console.log(data);
+            $('#alert-wrapper').html(alert_markup('danger', '<strong>Sorry!</strong> There is some issue with the server. '));
+        });
+    ```
+
+    Replace the long URL string (`AKfycbyo…/exec`) with your own deployment URL.
+
+    After making this change, re-run `gulp` to regenerate `js/scripts.min.js`:
+
+    ```bash
+    gulp
+    ```
+  </Step>
+
+  <Step title="Set the invite code">
+    The invite code is validated client-side by comparing the MD5 hash of the user's input against hardcoded hash values. Open `js/scripts.js` and find:
+
+    ```javascript js/scripts.js
+    if (MD5($('#invite_code').val()) !== 'b0e53b10c1f55ede516b240036b88f40'
+        && MD5($('#invite_code').val()) !== '2ac7f43695eb0479d5846bb38eec59cc') {
+        $('#alert-wrapper').html(alert_markup('danger', '<strong>Sorry!</strong> Your invite code is incorrect.'));
+    }
+    ```
+
+    The two hash values correspond to two valid invite codes (e.g. one for general guests and one for VIP guests). To set your own codes:
+
+    1. Decide on a numeric invite code, e.g. `1234`
+    2. Compute its MD5 hash — use any online MD5 tool or run `echo -n 1234 | md5sum` in a terminal
+    3. Replace one or both hash strings in the condition above
+    4. Re-run `gulp` to minify the updated script
+
+    Share the numeric code (not the hash) with your guests on their invitation cards.
+  </Step>
+
+  <Step title="Test the form">
+    Open the website in a browser, fill in the RSVP form with the correct invite code, and submit. Verify that:
+
+    - A new row appears in your Google Sheet
+    - The thank-you modal (`#rsvp-modal`) opens on success
+    - An incorrect invite code shows the danger alert without making a network request
+  </Step>
+</Steps>
+
+## Invite code security
+
+<Warning>
+  The invite code is validated **entirely in the browser** using client-side JavaScript. The MD5 hash is visible in `js/scripts.min.js`, which anyone can download and reverse. MD5 is not a secure hashing algorithm — a motivated guest could decode the hash to find the code.
+
+  This mechanism is designed to reduce accidental or casual form spam, not to prevent a determined bad actor. Do not rely on it as a security measure for sensitive events. For stronger access control, consider server-side validation in your Google Apps Script `doPost` handler.
+
+  ```javascript js/scripts.js
+  // The hash check runs before the $.post() call — no server round-trip needed to reject wrong codes
+  if (MD5($('#invite_code').val()) !== 'b0e53b10c1f55ede516b240036b88f40'
+      && MD5($('#invite_code').val()) !== '2ac7f43695eb0479d5846bb38eec59cc') {
+      $('#alert-wrapper').html(alert_markup('danger', '<strong>Sorry!</strong> Your invite code is incorrect.'));
+  } else {
+      $.post(/* ... */);
+  }
+  ```
+</Warning>
+
+## Alert markup helper
+
+Status messages (info, danger) are rendered using the `alert_markup()` function:
+
+```javascript js/scripts.js
+function alert_markup(alert_type, msg) {
+    return '<div class="alert alert-' + alert_type + '" role="alert">'
+        + msg
+        + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span>&times;</span></button></div>';
+}
+```
+
+The first argument is a Bootstrap alert type (`'info'`, `'danger'`, `'success'`, `'warning'`). The second argument is the HTML message string. This function is called both before the network request ("Just a sec!") and inside the `.done` / `.fail` callbacks.
+
+<Note>
+  Google Apps Script can send email notifications whenever a new RSVP is submitted. In your `doPost` function, add a call to `MailApp.sendEmail()` after appending the row:
+
+  ```javascript Google Apps Script
+  MailApp.sendEmail(
+    'you@example.com',
+    'New RSVP: ' + data.name,
+    data.name + ' (' + data.email + ') has RSVPed with ' + data.extras + ' extra guest(s).'
+  );
+  ```
+
+  Make sure the script has permission to send email when you deploy it.
+</Note>

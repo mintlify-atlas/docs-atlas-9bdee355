@@ -1,0 +1,81 @@
+---
+title: "Custom domain"
+description: "Connect your own domain name to your GitHub Pages wedding website"
+---
+
+By default your site is served at `https://<username>.github.io/<repo-name>`. This guide walks through pointing your own domain (e.g. `ourwedding.com`) to that address.
+
+<Steps>
+  <Step title="Purchase a domain">
+    Buy a domain from any registrar — Namecheap, GoDaddy, Google Domains, Cloudflare Registrar, etc. The registrar does not matter; you only need access to its DNS settings.
+  </Step>
+
+  <Step title="Enter your custom domain in GitHub Pages settings">
+    In your GitHub repository, go to **Settings → Pages**.
+
+    Under **Custom domain**, type your domain name (e.g. `ourwedding.com` or `www.ourwedding.com`) and click **Save**.
+
+    GitHub will commit a `CNAME` file to your repository automatically. The file contains a single line — your domain name.
+  </Step>
+
+  <Step title="Verify the CNAME file">
+    The `CNAME` file at the root of your repo should contain only your domain:
+
+    ```text
+    wedding.rampatra.com
+    ```
+
+    You can also create or edit this file manually. There must be exactly one domain on the first line with no trailing path or protocol.
+  </Step>
+
+  <Step title="Add a CNAME DNS record (subdomain)">
+    For a **subdomain** such as `www.ourwedding.com` or `wedding.ourwedding.com`, log in to your registrar's DNS management panel and add a CNAME record:
+
+    | Type | Host | Value |
+    |------|------|-------|
+    | CNAME | `www` | `<username>.github.io` |
+
+    Replace `<username>` with your GitHub username.
+  </Step>
+
+  <Step title="Add A records (apex / root domain)">
+    For an **apex domain** such as `ourwedding.com` (no `www`), CNAME records are not supported at the root. Add four A records pointing to GitHub Pages' IP addresses instead:
+
+    | Type | Host | Value |
+    |------|------|-------|
+    | A | `@` | `185.199.108.153` |
+    | A | `@` | `185.199.109.153` |
+    | A | `@` | `185.199.110.153` |
+    | A | `@` | `185.199.111.153` |
+
+    Many registrars also support `ALIAS` or `ANAME` records as an alternative for apex domains.
+  </Step>
+
+  <Step title="Enable HTTPS">
+    After DNS propagates, return to **Settings → Pages** in your GitHub repository and check **Enforce HTTPS**. GitHub automatically provisions a TLS certificate via Let's Encrypt.
+  </Step>
+</Steps>
+
+<Note>
+  DNS changes can take up to 48 hours to propagate globally. GitHub Pages may show a "Domain's DNS record could not be retrieved" error during this period — this is normal. Check back after a few hours.
+</Note>
+
+## Update the OG image URL
+
+<Warning>
+  After switching to a custom domain, update the Open Graph image URL in `index.html`. The default points to the demo site:
+
+  ```html
+  <meta property="og:image" content="https://wedding.ramswaroop.me/img/hero-min.jpg">
+  ```
+
+  Change it to use your custom domain so that social media previews load correctly:
+
+  ```html
+  <meta property="og:image" content="https://yourweddingdomain.com/img/hero-min.jpg">
+  ```
+</Warning>
+
+## Verify your setup
+
+Use [dnschecker.org](https://dnschecker.org) to confirm your DNS records have propagated. Once they have, visit your custom domain — it should load the wedding website over HTTPS.

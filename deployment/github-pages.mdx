@@ -1,0 +1,89 @@
+---
+title: "Deploy to GitHub Pages"
+description: "Host your wedding website for free on GitHub Pages"
+---
+
+GitHub Pages lets you host the wedding website at no cost. Since the site is entirely static — no server or database required — it is a perfect fit.
+
+<Tip>
+  See the live demo at [wedding.rampatra.com](http://wedding.rampatra.com/). Use invite code `271117` to try the RSVP feature.
+</Tip>
+
+## Deployment steps
+
+<Steps>
+  <Step title="Fork or clone the repository">
+    Fork [rampatra/wedding-website](https://github.com/rampatra/wedding-website) to your GitHub account, or clone it locally and push to a new repo.
+
+    ```bash
+    git clone https://github.com/rampatra/wedding-website.git
+    cd wedding-website
+    ```
+  </Step>
+
+  <Step title="Install dependencies and build">
+    Install npm dependencies, then run `gulp` to compile SCSS to CSS and minify JavaScript.
+
+    ```bash
+    npm install
+    gulp
+    ```
+
+    The build pipeline (defined in `gulpfile.js`) produces two output files:
+    - `css/styles.min.css` — compiled and compressed stylesheet
+    - `js/scripts.min.js` — minified JavaScript
+  </Step>
+
+  <Step title="Commit all compiled assets">
+    The compiled files must be committed to the repository. GitHub Pages serves files directly from your repo — it does not run a build step.
+
+    ```bash
+    git add css/styles.min.css js/scripts.min.js
+    git commit -m "Add compiled assets"
+    git push
+    ```
+
+    <Note>
+      `node_modules/` is listed in `.gitignore` and must **not** be committed. Compiled CSS and JS files, however, must be committed so GitHub Pages can serve them.
+    </Note>
+  </Step>
+
+  <Step title="Enable GitHub Pages">
+    In your GitHub repository, go to **Settings → Pages**.
+
+    - Under **Source**, select **Deploy from a branch**.
+    - Choose the `main` branch (or `master`, depending on your repo) and the `/ (root)` folder.
+    - Click **Save**.
+  </Step>
+
+  <Step title="Wait for deployment">
+    GitHub Actions will build and deploy the site. After a minute or two, your site will be live at:
+
+    ```text
+    https://<username>.github.io/<repo-name>
+    ```
+
+    For example, if your GitHub username is `johndoe` and your repo is `my-wedding`:
+
+    ```text
+    https://johndoe.github.io/my-wedding
+    ```
+
+    You can monitor deployment progress under the **Actions** tab of your repository.
+  </Step>
+</Steps>
+
+## The `.nojekyll` file
+
+The repository includes an empty `.nojekyll` file at the root. This file tells GitHub Pages to skip Jekyll processing.
+
+Without it, Jekyll would ignore any file or directory whose name starts with an underscore (`_`). The SCSS partials in `sass/partials/` use the `_` prefix convention (e.g. `_colors.scss`, `_typography.scss`), so while they are compiled before deployment, the `.nojekyll` file is a safeguard that prevents GitHub's build environment from stripping those files if they are ever served directly.
+
+## URL format
+
+| Setup | URL |
+|---|---|
+| Default GitHub Pages | `https://<username>.github.io/<repo-name>` |
+| Custom domain | `https://yourweddingdomain.com` |
+
+To use a custom domain, see [Custom domain](/deployment/custom-domain).

@@ -1,0 +1,111 @@
+---
+title: "Introduction"
+description: "Everything you need to know about the Wedding Website template"
+---
+
+## What is the Wedding Website template?
+
+The Wedding Website template is a beautiful, feature-rich, device-friendly static site you can use to create a personal wedding website. Built by [Ram Patra](https://github.com/rampatra), it was originally created for his own wedding and has since been open-sourced for anyone to use and customize.
+
+The site is a single `index.html` page with SCSS-powered styles, jQuery-driven interactions, and integrations with Google Sheets, Google Maps, and a calendar export utility — all without requiring a backend server or database.
+
+A live demo is available at [wedding.rampatra.com](http://wedding.rampatra.com/) (invite code: `271117`).
+
+## Who is it for?
+
+This template is for couples who want a polished, functional wedding website without the cost or complexity of a hosted backend. If you are comfortable making small edits to HTML, CSS, and JavaScript, you can have your own customized site live within minutes using [GitHub Pages](https://pages.github.com/).
+
+## Key features
+
+<CardGroup cols={2}>
+  <Card title="Responsive design" icon="mobile">
+    Fully responsive layout that works across all screen sizes, from mobile phones to desktop monitors.
+  </Card>
+  <Card title="RSVP with Google Sheets" icon="table">
+    RSVP form submissions are sent directly to a Google Sheet using a Google Apps Script, with no backend required.
+  </Card>
+  <Card title="Email alerts" icon="envelope">
+    Receive an email notification whenever a guest RSVPs, powered by Google Sheets triggers.
+  </Card>
+  <Card title="Add to Calendar" icon="calendar">
+    Guests can add the wedding events to their calendar with support for Google Calendar, Apple Calendar, Outlook, and Yahoo.
+  </Card>
+  <Card title="Book Uber" icon="car">
+    A one-tap "Book Uber" button lets guests book a ride directly to the venue.
+  </Card>
+  <Card title="YouTube video background" icon="video">
+    Embed a YouTube video as an ambient background section showcasing your venue or city.
+  </Card>
+  <Card title="Google Maps integration" icon="map">
+    An interactive Google Map pinpoints the venue, with an info panel showing the address and contact details.
+  </Card>
+  <Card title="Zero hosting cost" icon="server">
+    Host entirely for free on GitHub Pages. No backend server or database needed.
+  </Card>
+</CardGroup>
+
+## How it works
+
+The template uses a **no-backend architecture**: the entire site is static HTML, CSS, and JavaScript that can be served directly from GitHub Pages.
+
+```
+Guest browser
+     │
+     ▼
+GitHub Pages  ──▶  index.html + css/styles.min.css + js/scripts.min.js
+     │
+     ├── RSVP form  ──▶  Google Apps Script  ──▶  Google Sheet  ──▶  Email alert
+     ├── Map section  ──▶  Google Maps JavaScript API
+     └── Calendar export  ──▶  ouical.js (generates calendar links)
+```
+
+| Concern | Solution |
+|---|---|
+| Hosting | GitHub Pages (free) |
+| RSVP data storage | Google Sheets |
+| RSVP email alerts | Google Apps Script trigger |
+| Map | Google Maps JavaScript API |
+| Calendar export | `ouical.js` (bundled in `js/vendor/`) |
+| Styles | SCSS compiled to minified CSS via Gulp |
+| Scripts | Minified JS via Gulp + UglifyJS |
+
+The RSVP form (`#rsvp-form` in `index.html`) serializes the guest's input and POSTs it to a Google Apps Script web app URL. The script writes the data to a Google Sheet and optionally triggers an email alert. Invite codes are validated client-side using an MD5 hash check in `js/scripts.js` before the form data is submitted.
+
+## Dependencies
+
+### Runtime dependencies
+
+These packages are loaded at runtime and served from `node_modules/`:
+
+| Package | Version | Purpose |
+|---|---|---|
+| `animate.css` | `^3.7.2` | CSS animation classes used with the Waypoints scroll triggers |
+| `font-awesome` | `^4.7.0` | Icon font used throughout the page (arrows, map markers, social icons, etc.) |
+| `waypoints` | `^4.0.1` | Triggers CSS animations as page sections scroll into view |
+
+### Dev dependencies
+
+These packages are used at build time only:
+
+| Package | Version | Purpose |
+|---|---|---|
+| `gulp` | `^4.0.2` | Task runner that orchestrates the build |
+| `gulp-sass` | `^5.0.0` | Compiles SCSS source files to CSS |
+| `sass` | `^1.25.0` | Dart Sass compiler (peer dependency of `gulp-sass`) |
+| `gulp-uglify` | `^3.0.2` | Minifies JavaScript files |
+| `gulp-rename` | `^1.4.0` | Renames output files (e.g. `scripts.js` → `scripts.min.js`) |
+
+<Note>
+  The Wedding Website template is licensed under the **GNU General Public License v3.0 (GPL-3.0)**. This means you are free to use, modify, and distribute the project, but any derivative works must also be distributed under the GPL-3.0 license. See the `LICENSE` file in the repository for the full license text.
+</Note>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Clone the repo, install dependencies, and open the site in your browser in under five minutes.
+  </Card>
+  <Card title="Couple details" icon="heart" href="/customization/couple-details">
+    Replace the placeholder names, story, and photos with your own details.
+  </Card>
+</CardGroup>

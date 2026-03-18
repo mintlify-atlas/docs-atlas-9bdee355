@@ -1,97 +1,75 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "Wedding Website"
+description: "A beautiful, feature-rich, device-friendly wedding website template — free to host on GitHub Pages with RSVP via Google Sheets."
 ---
 
-## Setting up
-
-Get your documentation site up and running in minutes.
-
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
-
-## Make it yours
-
-Design a docs site that looks great and empowers your users.
-
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+<CardGroup cols={2}>
+  <Card title="Quick Start" icon="rocket" href="/quickstart">
+    Clone the repo, install dependencies, and have a working wedding website in under 5 minutes.
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="RSVP Setup" icon="envelope" href="/customization/rsvp-google-sheets">
+    Connect your RSVP form to Google Sheets and receive email alerts for every guest response.
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="Customization" icon="palette" href="/customization/couple-details">
+    Personalize every section — your story, events, photos, venue, and more.
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
+  <Card title="Deploy Free" icon="cloud" href="/deployment/github-pages">
+    Host your website completely free on GitHub Pages with no backend or database required.
   </Card>
-</Columns>
+</CardGroup>
 
-## Create beautiful pages
+## What's included
 
-Everything you need to create world-class documentation.
+The Wedding Website template is a single-page HTML/SCSS/JavaScript website with everything you need to invite, inform, and RSVP your guests.
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
+<CardGroup cols={2}>
+  <Card title="RSVP to Google Sheets" icon="table">
+    Guests submit their name, email, and party size. Responses go directly into a Google Sheet — no server required.
   </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
+  <Card title="Add to Calendar" icon="calendar">
+    After RSVPing, guests can add the event to Google Calendar, Apple Calendar, Outlook, or Yahoo.
   </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
+  <Card title="Google Maps venue" icon="map-pin">
+    An embedded interactive Google Map shows guests exactly where the venue is located.
   </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
+  <Card title="Book Uber" icon="car">
+    A deep-link button lets guests book an Uber to the venue with a single tap on mobile.
   </Card>
-</Columns>
+  <Card title="YouTube video" icon="video">
+    Embed a YouTube video that plays as a background showcase — great for a city or venue highlight.
+  </Card>
+  <Card title="Engagement photos" icon="image">
+    A lightbox photo gallery with smooth hover overlays shows off your engagement pictures.
+  </Card>
+  <Card title="Invite code protection" icon="key">
+    Protect your RSVP form with a numeric invite code — only guests with the code can submit.
+  </Card>
+  <Card title="Fully responsive" icon="mobile">
+    Looks great on desktop, tablet, and mobile with animated scroll waypoints and a hamburger nav.
+  </Card>
+</CardGroup>
 
-## Need inspiration?
+## Technology overview
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+| Layer | Technology |
+|---|---|
+| Markup | HTML5 |
+| Styles | SCSS (compiled via Gulp + gulp-sass) |
+| Scripts | jQuery, Waypoints, FancyBox, FlexSlider |
+| RSVP backend | Google Apps Script → Google Sheets |
+| Maps | Google Maps JavaScript API |
+| Calendar | ouical.js |
+| Ride booking | Uber deep-link URL scheme |
+| Build tool | Gulp 4 |
+| Hosting | GitHub Pages (free) |
+
+## Getting help
+
+<CardGroup cols={2}>
+  <Card title="Project structure" icon="folder-tree" href="/reference/project-structure">
+    Understand every file and folder in the repository.
+  </Card>
+  <Card title="FAQ" icon="circle-question" href="/reference/faq">
+    Answers to common questions about setup, RSVP, and deployment.
+  </Card>
+</CardGroup>
